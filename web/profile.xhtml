@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>Моят профил</title>
+</h:head>
+
+<h:body>
+<h:form id="mainForm" enctype="multipart/form-data">
+
+    <p:layout fullPage="true">
+
+        <p:layoutUnit position="west" size="300" header="Профил" collapsible="true">
+
+            <p:panel style="text-align:center">
+
+                <h:panelGroup rendered="#{photoBean.currentPhoto}">
+                    <p:graphicImage value="#{photoBean.currentPhoto}"
+                                    style="width:200px;height:200px;border-radius:50%;object-fit:cover;"/>
+                </h:panelGroup>
+
+                <h:panelGroup rendered="#{empty photoBean.currentPhoto}">
+                    <p:graphicImage value="/resources/images/default-avatar.png"
+                                    style="width:200px;height:200px;border-radius:50%;object-fit:cover;"/>
+                </h:panelGroup>
+
+                <br/><br/>
+
+                <p:fileUpload value="#{photoBean.profilFile}"
+                              mode="advanced"
+                              dragDropSupport="true"
+                              auto="true"
+                              update=":mainForm"
+                              label="Избери файл"/>
+
+                <br/>
+
+                <p:photoCam widgetVar="pc" listener="#{photoBean.onCapture}" update=":mainForm"/>
+                <p:commandButton type="button" value="Снимай" onclick="PF('pc').capture()"/>
+
+            </p:panel>
+
+            <br/>
+
+            <p:panel header="Информация">
+                <h:panelGrid columns="2" columnClasses="label,value">
+                    <h:outputText value="Потребител:" />
+                    <h:outputText value="#{userBean.loggedUser.username}" />
+
+                    <h:outputText value="Email:" />
+                    <h:outputText value="#{userBean.loggedUser.email}" />
+
+                    <h:outputText value="Пол:" />
+                    <h:outputText value="#{userBean.loggedUser.gender}" />
+
+                    <h:outputText value="Възраст:" />
+                    <h:outputText value="#{userBean.loggedUser.age}" />
+
+                    <h:outputText value="Локация:" />
+                    <h:outputText value="#{userBean.loggedUser.location}" />
+                </h:panelGrid>
+            </p:panel>
+
+        </p:layoutUnit>
+
+        <p:layoutUnit position="center" header="Стена">
+
+            <p:panel header="Търсачка на профили" toggleable="true" collapsed="false" style="margin-bottom:20px;">
+
+                <p:inputText value="#{contactBean.searchQuery}"
+                             placeholder="Търси потребител..."
+                             style="width:70%;" />
+
+                <p:commandButton value="Търси"
+                                 action="#{contactBean.search}"
+                                 update=":mainForm:searchResults"
+                                 style="margin-left:10px;" />
+
+                <br/><br/>
+
+                <p:panel id="searchResults" header="Резултати" toggleable="true" collapsed="false">
+
+                    <ui:repeat value="#{contactBean.searchResults}" var="u">
+
+                        <p:panel style="margin-bottom:10px;">
+                            <h:outputText value="#{u.username}" />
+                            <br/>
+                            <small><h:outputText value="#{u.email}" /></small>
+                            <br/><br/>
+
+                            <p:commandButton value="Добави контакт"
+                                             action="#{contactBean.addContact(u.id)}"
+                                             update=":mainForm:myContactsPanel :mainForm:searchResults" />
+                        </p:panel>
+
+                    </ui:repeat>
+
+                </p:panel>
+
+            </p:panel>
+
+            <p:panel id="myContactsPanel" header="Моите контакти" toggleable="true" collapsed="true" style="margin-bottom:20px;">
+
+                <ui:repeat value="#{contactBean.myContacts}" var="c">
+
+                    <p:panel style="margin-bottom:10px;">
+                        <h:outputText value="#{c.username}" />
+                        <br/>
+                        <small><h:outputText value="#{c.email}" /></small>
+                    </p:panel>
+
+                </ui:repeat>
+
+            </p:panel>
+
+            <p:panel header="Какво мислиш сега?">
+
+                <p:inputTextarea value="#{messageBean.text}" rows="3" style="width:100%"/>
+
+                <br/><br/>
+
+                <p:fileUpload mode="simple"
+                              value="#{messageBean.uploadedFile}"
+                              allowTypes="/(\.|\/)(png|jpg|jpeg)$/"/>
+
+                <br/><br/>
+
+                <p:commandButton value="Публикувай"
+                                 action="#{messageBean.publish}"
+                                 update="textPosts imagePosts"/>
+            </p:panel>
+
+            <br/>
+
+            <p:panel header="Стена" toggleable="true" collapsed="false">
+
+                <p:panel id="textPosts" header="Текстови публикации" toggleable="true" collapsed="true">
+
+                    <ui:repeat value="#{messageBean.textPosts}" var="t">
+
+                        <p:panel style="margin-bottom:10px;">
+                            <h:outputText value="#{t.text}" />
+                            <br/>
+                            <small>
+                                <h:outputText value="#{t.createdAt}">
+                                    <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+                                </h:outputText>
+                            </small>
+                        </p:panel>
+
+                    </ui:repeat>
+
+                </p:panel>
+
+                <br/>
+
+                <p:panel id="imagePosts" header="Публикации със снимки" toggleable="true" collapsed="true">
+                    <p:panel style="margin-bottom:10px;">
+
+                        <ui:repeat value="#{messageBean.allUploadedImages}" var="img">
+                            <h:graphicImage value="#{img}" style="width:200px; margin:10px; display:block;" />
+                        </ui:repeat>
+
+                    </p:panel>
+                </p:panel>
+
+            </p:panel>
+
+        </p:layoutUnit>
+
+    </p:layout>
+
+</h:form>
+</h:body>
+</html>

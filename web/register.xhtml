@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Регистрация</title>
+    </h:head>
+
+<h:body>
+    <h:form>
+        <p:panel header="Регистрация">
+            <p:panelGrid columns="2" columnClasses="label, value">
+                <h:outputText value="Email:" />
+                <p:inputText value="#{userBean.user.email}" required="true" />
+                
+                <h:outputText value="Username:" />
+                <p:inputText value="#{userBean.user.username}" required="true" />
+                
+                <h:outputText value="Password:" />
+                <p:password value="#{userBean.password}" required="true" />
+                
+                <h:outputText value="Пол:" />
+                <p:selectOneMenu value="#{userBean.user.gender}">
+                    <f:selectItem itemLabel="Мъж" itemValue="male" />
+                    <f:selectItem itemLabel="Жена" itemValue="female" />
+                </p:selectOneMenu>
+                
+                <h:outputText value="Възраст:" />
+                <p:inputText value="#{userBean.user.age}" required="true" />
+                
+                <h:outputText value="Локация: " />
+                <p:inputText value="#{userBean.user.location}" />
+            </p:panelGrid>
+            <br/>
+            <p:commandButton value="Регистрация" action="#{userBean.register}" update="@form" />
+        </p:panel>
+    </h:form>
+</h:body>
+</html>
+
